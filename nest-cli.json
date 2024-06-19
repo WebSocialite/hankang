@@ -1,8 +1,32 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src",
+  "sourceRoot": "apps/hankang-api/src",
   "compilerOptions": {
-    "deleteOutDir": true
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/hankang-api/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/hankang-api",
+  "projects": {
+    "hankang-api": {
+      "type": "application",
+      "root": "apps/hankang-api",
+      "entryFile": "main",
+      "sourceRoot": "apps/hankang-api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/hankang-api/tsconfig.app.json"
+      }
+    },
+    "hankang-api-batch": {
+      "type": "application",
+      "root": "apps/hankang-batch",
+      "entryFile": "main",
+      "sourceRoot": "apps/hankang-batch/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/hankang-batch/tsconfig.app.json"
+      }
+    }
   }
 }
