@@ -3,6 +3,6 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class AppService {
   getHello(): string {
-    return 'WELCOME TO HANKANG API SERVER!';
+    return 'WELCOME TO HANKANG REST API SERVER!';
   }
 }
