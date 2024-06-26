@@ -29,7 +29,7 @@ import { DatabaseModule } from './database/database.module';
       //   return graphQLFormattedError;
       // },
     }),
-    ComponentsModule,
+    ComponentsModule,  // App modulemiz shu components module dan iborat boladi
     DatabaseModule,
     
   ],
