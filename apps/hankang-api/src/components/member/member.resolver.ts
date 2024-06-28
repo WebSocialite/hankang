@@ -2,19 +2,20 @@ import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { MemberService } from './member.service';
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { LoginInput, MemberInput } from '../../libs/dto/member/member.input';
+import { Member } from '../../libs/dto/member/member';
 
 @Resolver()
 export class MemberResolver {
     constructor( private readonly memberService: MemberService) {}
 
     
-    @Mutation(() => String)
+    @Mutation(() => Member)
     @UsePipes(ValidationPipe) // user o'zini datasini tugri kiritgan yoki yoq ligini validate qlib beradi
-        public async signup(@Args('input') input: MemberInput): Promise<String> {
-                console.log("Mutation: signup");
-                console.log('input:', input);
-                return await this.memberService.signup();
-        }
+    public async signup(@Args('input') input: MemberInput): Promise<Member> {
+        console.log("Mutation: signup");
+        console.log("input", input);
+        return await this.memberService.signup(input);
+}
         
         @Mutation(() => String)
         @UsePipes(ValidationPipe)

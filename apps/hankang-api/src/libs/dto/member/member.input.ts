@@ -4,7 +4,7 @@ import { MemberAuthType, MemberStatus, MemberType } from "../../enums/member.enu
 // import { availableAgentSorts, availableMemberSorts } from "../../config";
 import { Direction } from "../../enums/common.enum";
 
-
+// MEMBER.INPUT.TS incoming(kirib kelyotgan) malumot 
 
 @InputType()
 export class MemberInput {
