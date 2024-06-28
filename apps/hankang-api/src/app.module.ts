@@ -7,6 +7,7 @@ import { ApolloDriver } from "@nestjs/apollo";
 import { AppResolver } from './app.resolver';
 import { ComponentsModule } from './components/components.module';
 import { DatabaseModule } from './database/database.module';
+import { T } from './libs/types/common';
 // import { ComponentsModule } from './components/components.module';
 // import { DatabaseModule } from './database/database.module';
 // import { T } from './libs/types/common';
@@ -20,14 +21,14 @@ import { DatabaseModule } from './database/database.module';
       playground: true,
       uploads: false,
       autoSchemaFile: true,
-      // formatError: (error: ) => {
-      //   const graphQLFormattedError = {
-      //     code: error?.extensions.code,
-      //     message: error?.extensions?.exception?.response?.message || error?.extensions?.response?.message || error?.message, 
-      //   };
-      //   console.log("GRAPHQL GLOBAL ERR", graphQLFormattedError);
-      //   return graphQLFormattedError;
-      // },
+      formatError: (error: T) => { // global error handler  try and catch logicni ishlatish shart bulmas ekan
+        const graphQLFormattedError = {
+          code: error?.extensions.code,
+          message: error?.extensions?.exception?.response?.message || error?.extensions?.response?.message || error?.message, 
+        };
+        console.log("GRAPHQL GLOBAL ERR", graphQLFormattedError);
+        return graphQLFormattedError;
+      },
     }),
     ComponentsModule,  // App modulemiz shu components module dan iborat boladi
     DatabaseModule,

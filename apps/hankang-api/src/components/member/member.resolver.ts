@@ -10,18 +10,17 @@ export class MemberResolver {
 
     
     @Mutation(() => Member)
-    @UsePipes(ValidationPipe) // user o'zini datasini tugri kiritgan yoki yoq ligini validate qlib beradi
     public async signup(@Args('input') input: MemberInput): Promise<Member> {
         console.log("Mutation: signup");
         console.log("input", input);
         return await this.memberService.signup(input);
 }
         
-        @Mutation(() => String)
-        @UsePipes(ValidationPipe)
-        public async login(@Args('input') input: LoginInput): Promise<String> {
+        @Mutation(() => Member)
+        public async login(@Args('input') input: LoginInput): Promise<Member> {
+
                 console.log("Mutation: login");
-                return await this.memberService.login();
+                return await this.memberService.login(input);
            }
     
         @Mutation(() => String)
