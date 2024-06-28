@@ -12,6 +12,7 @@ import { T } from './libs/types/common';
 // import { DatabaseModule } from './database/database.module';
 // import { T } from './libs/types/common';
 // import { SocketModule } from './socket/socket.module';
+import { AuthService } from './components/auth/auth.service';
 
 @Module({ //GRAPH QL API BACKEND SERVERINI TASHKIL QILYAPMIZ!!!!!
   imports: [
@@ -35,6 +36,6 @@ import { T } from './libs/types/common';
     
   ],
   controllers: [AppController],
-  providers: [AppService, AppResolver],
+  providers: [AppService, AppResolver, AuthService],
 })
 export class AppModule {}

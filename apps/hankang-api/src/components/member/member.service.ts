@@ -5,21 +5,27 @@ import { Member } from '../../libs/dto/member/member';
 import { Message } from '../../libs/enums/common.enum';
 import { LoginInput, MemberInput } from '../../libs/dto/member/member.input';
 import { MemberStatus } from '../../libs/enums/member.enum';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class MemberService {
-  constructor(@InjectModel("Member") private readonly memberModel: Model<Member>) {}
+  constructor(@InjectModel("Member") private readonly memberModel: Model<Member>,
+  private authService: AuthService,
+) {}
 
-    public async signup(input: MemberInput): Promise<Member> {
-      try {
-        const result = await this.memberModel.create(input);
-         //result.accessToken = await this.authService.createToken(result);
-        return result;
-       } catch (err) {
-        console.log('Error, Service.model:', err.message);
-        throw new BadRequestException(Message.USED_MEMBER_NICK_OR_PHONE);
-       }
-     }
+public async signup(input: MemberInput): Promise<Member> {
+      console.log("signup", input);
+      input.memberPassword = await this.authService.hashPassword(input.memberPassword);
+      console.log('Hashed password:', input.memberPassword);
+    try {
+     const result = await this.memberModel.create(input);
+      //result.accessToken = await this.authService.createToken(result);
+     return result;
+    } catch (err) {
+     console.log('Error, Service.model:', err.message);
+     throw new BadRequestException(Message.USED_MEMBER_NICK_OR_PHONE);
+    }
+   }
     
      public async login(input: LoginInput): Promise<Member> {
         const { memberNick, memberPassword } = input;
@@ -35,13 +41,10 @@ export class MemberService {
          throw new InternalServerErrorException(Message.BLOCKED_USER);
         }
 
-        const isMatch = memberPassword === response.memberPassword;
+        const isMatch = await this.authService.comparePasswords(input.memberPassword, response.memberPassword);
+        console.log('Password match:', isMatch);
         if (!isMatch) throw new InternalServerErrorException(Message.WRONG_PASSWORD);
-        
-        // const isMatch = await this.authService.comparePasswords(input.memberPassword, response.memberPassword);
-        // console.log('Password match:', isMatch);
-        // if (!isMatch) throw new InternalServerErrorException(Message.WRONG_PASSWORD);
-        // response.accessToken = await this.authService.createToken(response);
+        //response.accessToken = await this.authService.createToken(response);
         // console.log('Access token created:', response.accessToken);
         return response;
       }
