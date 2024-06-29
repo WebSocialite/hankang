@@ -7,6 +7,7 @@ import { LoginInput, MemberInput } from '../../libs/dto/member/member.input';
 import { MemberStatus } from '../../libs/enums/member.enum';
 import { AuthService } from '../auth/auth.service';
 import { MemberUpdate } from '../../libs/dto/member/member.update';
+import { T } from '../../libs/types/common';
 
 @Injectable()
 export class MemberService {
@@ -66,9 +67,19 @@ public async login(input: LoginInput): Promise<Member> {
     return result;
  }
     
-     public async getMember(): Promise<string> {
-      return 'getmember exec';
-     }
+ public async getMember(memberId: ObjectId, targetId: ObjectId): Promise<Member> {
+  console.log('GetMember memberId:', memberId, 'targetId:', targetId);
+  const search: T = {
+      _id: targetId,
+      memberStatus: {
+          $in: [MemberStatus.ACTIVE, MemberStatus.BLOCK],
+      },
+  };
+  const targetMember = await this.memberModel.findOne(search).lean().exec();
+  if(!targetMember) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+
+return targetMember;
+}
 
      public async getAllMembersByAdmin(): Promise<string> {
       return 'getAllMembersByAdmin exec';
