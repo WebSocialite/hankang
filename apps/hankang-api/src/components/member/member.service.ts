@@ -27,27 +27,27 @@ public async signup(input: MemberInput): Promise<Member> {
     }
    }
     
-     public async login(input: LoginInput): Promise<Member> {
-        const { memberNick, memberPassword } = input;
-        const response: Member = await this.memberModel
-         .findOne({ memberNick: memberNick })
-         .select('+memberPassword')
-         .exec();
-         console.log('Member found:', response);
+public async login(input: LoginInput): Promise<Member> {
+    const { memberNick, memberPassword } = input;
+    const response: Member = await this.memberModel
+    .findOne({ memberNick: memberNick })
+    .select('+memberPassword')
+    .exec();
+    console.log('Member found:', response);
       
-        if (!response || response.memberStatus === MemberStatus.DELETE) {
-         throw new InternalServerErrorException(Message.NO_MEMBER_NICK);
-        } else if (response.memberStatus === MemberStatus.BLOCK) {
-         throw new InternalServerErrorException(Message.BLOCKED_USER);
-        }
+    if (!response || response.memberStatus === MemberStatus.DELETE) { 
+    throw new InternalServerErrorException(Message.NO_MEMBER_NICK);
+    } else if (response.memberStatus === MemberStatus.BLOCK) {
+    throw new InternalServerErrorException(Message.BLOCKED_USER);
+   }
 
-        const isMatch = await this.authService.comparePasswords(input.memberPassword, response.memberPassword);
-        console.log('Password match:', isMatch);
-        if (!isMatch) throw new InternalServerErrorException(Message.WRONG_PASSWORD);
-        response.accessToken = await this.authService.createToken(response);
-        console.log('Access token created:', response.accessToken);
-        return response;
-      }
+    const isMatch = await this.authService.comparePasswords(input.memberPassword, response.memberPassword);
+    console.log('Password match:', isMatch);
+    if (!isMatch) throw new InternalServerErrorException(Message.WRONG_PASSWORD);
+    response.accessToken = await this.authService.createToken(response);
+    console.log('Access token created:', response.accessToken);
+    return response;
+  }
         
      public async updateMember(): Promise<string> {
         return 'updatemember exec';
