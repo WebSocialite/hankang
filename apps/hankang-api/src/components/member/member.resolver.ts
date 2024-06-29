@@ -11,30 +11,46 @@ export class MemberResolver {
     
     @Mutation(() => Member)
     public async signup(@Args('input') input: MemberInput): Promise<Member> {
-        console.log("Mutation: signup");
-        console.log("input", input);
-        return await this.memberService.signup(input);
+    console.log("Mutation: signup");
+    console.log("input", input);
+    return await this.memberService.signup(input);
 }
         
-        @Mutation(() => Member)
-        public async login(@Args('input') input: LoginInput): Promise<Member> {
+    @Mutation(() => Member)
+    public async login(@Args('input') input: LoginInput): Promise<Member> {
+    console.log("Mutation: login");
+    return await this.memberService.login(input);
+    }
 
-                console.log("Mutation: login");
-                return await this.memberService.login(input);
-           }
-    
-        @Mutation(() => String)
-        public async updateMember(): Promise<String> { // @AuthMember = Custom decorator
-            console.log("Mutation: updateMember");
-            return await this.memberService.updateMember();
-        }
-        @Query(() => String)
-        public async getMember(): Promise<String> { // @AuthMember = Custom decorator
-            console.log("Query: getMember");
-            return await this.memberService.getMember();
-        }
+    @Mutation(() => String)
+    public async updateMember(): Promise<String> { // @AuthMember = Custom decorator
+    console.log("Mutation: updateMember");
+    return await this.memberService.updateMember();
+    }
+
+    @Query(() => String)
+    public async getMember(): Promise<String> { // @AuthMember = Custom decorator
+    console.log("Query: getMember");
+    return await this.memberService.getMember();
+    }
+
+   //**  ADMIN ONLY  **/
+
+    // Authorization: ADMIN
+   @Query(() => String)
+   public async getAllMembersByAdmin(): Promise<string> {
+    return await this.memberService.getAllMembersByAdmin();
+   }
+
+   @Mutation(() => String)
+   public async updateMembersByAdmin(): Promise<string> {
+    return await this.memberService.updateMembersByAdmin();
+   }
 
 
+
+
+   
 }
 
 

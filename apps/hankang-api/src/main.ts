@@ -6,7 +6,7 @@ import { LoggingInterceptor } from './libs/interceptor/Logging.interceptor';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());   // user o'zini datasini tugri kiritgan yoki yoq ligini validate qlib beradi  
-  app.useGlobalInterceptors(new LoggingInterceptor());
+  app.useGlobalInterceptors(new LoggingInterceptor()); // middleware integrations 
   await app.listen(process.env.PORT_API ?? 4000);
 }
 bootstrap();

@@ -19,7 +19,7 @@ public async signup(input: MemberInput): Promise<Member> {
       console.log('Hashed password:', input.memberPassword);
     try {
      const result = await this.memberModel.create(input);
-      //result.accessToken = await this.authService.createToken(result);
+    result.accessToken = await this.authService.createToken(result);
      return result;
     } catch (err) {
      console.log('Error, Service.model:', err.message);
@@ -44,8 +44,8 @@ public async signup(input: MemberInput): Promise<Member> {
         const isMatch = await this.authService.comparePasswords(input.memberPassword, response.memberPassword);
         console.log('Password match:', isMatch);
         if (!isMatch) throw new InternalServerErrorException(Message.WRONG_PASSWORD);
-        //response.accessToken = await this.authService.createToken(response);
-        // console.log('Access token created:', response.accessToken);
+        response.accessToken = await this.authService.createToken(response);
+        console.log('Access token created:', response.accessToken);
         return response;
       }
         
@@ -55,7 +55,16 @@ public async signup(input: MemberInput): Promise<Member> {
     
      public async getMember(): Promise<string> {
       return 'getmember exec';
-}
+     }
+
+     public async getAllMembersByAdmin(): Promise<string> {
+      return 'getAllMembersByAdmin exec';
+     }
+
+     public async updateMembersByAdmin(): Promise<string> {
+      return 'updateMembersByAdmin exec';
+     }
+
 
 }
 
