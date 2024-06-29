@@ -8,6 +8,7 @@ import { AuthMember } from '../auth/decorators/authMember.decorator';
 import { ObjectId } from 'mongoose';
 import { MemberType } from '../../libs/enums/member.enum';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @Resolver()
 export class MemberResolver {
@@ -35,7 +36,7 @@ export class MemberResolver {
         return `Hi ${memberNick}`;
     }
 
-    //@Roles(MemberType.USER, MemberType.SELLER)
+    @Roles(MemberType.USER, MemberType.SELLER)
     @UseGuards(RolesGuard) 
     @Query(() => String)
     public async checkAuthRoles(@AuthMember() authMember: Member ): Promise<string> { // @AuthMember = Custom decorator
@@ -60,9 +61,11 @@ export class MemberResolver {
 
    //**  ADMIN ONLY  **/
 
-    // Authorization: ADMIN
+   @Roles(MemberType.ADMIN)
+   @UseGuards(RolesGuard)
    @Query(() => String)
-   public async getAllMembersByAdmin(): Promise<string> {
+   public async getAllMembersByAdmin(@AuthMember() authMember: Member): Promise<string> {
+    console.log('authMember.memberType:', authMember.memberType);
     return await this.memberService.getAllMembersByAdmin();
    }
 
