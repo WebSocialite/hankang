@@ -8,11 +8,16 @@ import { MemberStatus } from '../../libs/enums/member.enum';
 import { AuthService } from '../auth/auth.service';
 import { MemberUpdate } from '../../libs/dto/member/member.update';
 import { T } from '../../libs/types/common';
+import { ViewGroup } from '../../libs/enums/view.enum';
+import { ViewService } from '../view/view.service';
+import { ViewInput } from '../../libs/dto/view/view.input';
 
 @Injectable()
 export class MemberService {
   constructor(@InjectModel("Member") private readonly memberModel: Model<Member>,
   private authService: AuthService,
+  private viewService: ViewService,
+
 ) {}
 
 public async signup(input: MemberInput): Promise<Member> {
@@ -75,9 +80,21 @@ public async login(input: LoginInput): Promise<Member> {
           $in: [MemberStatus.ACTIVE, MemberStatus.BLOCK],
       },
   };
-  const targetMember = await this.memberModel.findOne(search).lean().exec();
+  const targetMember = await this.memberModel.findOne(search).lean().exec(); // .lean => javascriptni objectga aylantirib beradi
   if(!targetMember) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+  
+  if(memberId) {
+    // record views
+    const viewInput: ViewInput = { memberId: memberId, viewRefId: targetId, viewGroup: ViewGroup.MEMBER };
+    const newView = await this.viewService.recordView(viewInput);
+    
+    //increase views
+    if(newView) { // yangi view hosil bolganda pasdagi mantiqni qaytar dyapmiz
+        await this.memberModel.findOneAndUpdate(search, { $inc: { memberViews: 1 }}, { new: true}).exec();
+        targetMember.memberViews++;
+    }
 
+  }
 return targetMember;
 }
 
@@ -90,9 +107,7 @@ return targetMember;
      }
 
 
-}
-
-
+    }
 
 // import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 // import { InjectModel } from '@nestjs/mongoose';
