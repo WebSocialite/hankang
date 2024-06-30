@@ -22,8 +22,8 @@ export enum Message {
 }
 
 export enum Direction {
-    ASC = 1,
-    DESC = -1,
+    ASC = 1,       // pasdan yuqoriga
+    DESC = -1,     // yuqoridan pasga
 }
 registerEnumType(Direction, { 
     name: 'Direction'

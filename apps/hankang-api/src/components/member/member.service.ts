@@ -1,16 +1,17 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
-import { Member } from '../../libs/dto/member/member';
-import { Message } from '../../libs/enums/common.enum';
-import { LoginInput, MemberInput } from '../../libs/dto/member/member.input';
-import { MemberStatus } from '../../libs/enums/member.enum';
+import { Member, Members } from '../../libs/dto/member/member';
+import { Direction, Message } from '../../libs/enums/common.enum';
+import { AgentsInquiry, LoginInput, MemberInput } from '../../libs/dto/member/member.input';
+import { MemberStatus, MemberType } from '../../libs/enums/member.enum';
 import { AuthService } from '../auth/auth.service';
 import { MemberUpdate } from '../../libs/dto/member/member.update';
 import { T } from '../../libs/types/common';
 import { ViewGroup } from '../../libs/enums/view.enum';
 import { ViewService } from '../view/view.service';
 import { ViewInput } from '../../libs/dto/view/view.input';
+import { lookupAuthMemberLiked } from '../../libs/config';
 
 @Injectable()
 export class MemberService {
@@ -97,6 +98,30 @@ public async login(input: LoginInput): Promise<Member> {
   }
 return targetMember;
 }
+public async getAgents(memberId: ObjectId, input: AgentsInquiry): Promise<Members> {
+  const {text} = input.search;
+  const match: T = { memberType: MemberType.SELLER, memberStatus: MemberStatus.ACTIVE };
+  const sort: T = { [input?.sort ?? "createdAt"]: input?.direction ?? Direction.DESC }; // agar sort va direction kiritilmagan bolsa bu yerda CreatedAt boladi va DESC (yuqoridan pasga)
+
+  if(text) match.memberNick = { $regex: new RegExp(text, 'i') }; 
+  console.log("match", match);
+
+  const result = await this.memberModel
+  .aggregate([ // bu mantiq Pipeline lardan iborat va u Arrayni qabul qiladi
+      { $match: match }, // match syntax
+      { $sort: sort },
+      { $facet: { // bir vaqtni ozida bir nechta pipeline dan foydalana olarkanmiz
+          list: [{ $skip: (input.page -1) * input.limit}, { $limit: input.limit },  // list orniga istagan nom qoyishimiz mumkun
+          lookupAuthMemberLiked(memberId),
+          ],
+          metaCounter: [{ $count: "total" }], // total nomi bilan count hosil qildik
+       }, },
+
+  ]).exec();
+  if(!result.length) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+  return result[0];
+ }
+
 
      public async getAllMembersByAdmin(): Promise<string> {
       return 'getAllMembersByAdmin exec';

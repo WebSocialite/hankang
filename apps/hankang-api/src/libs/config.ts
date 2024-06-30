@@ -1,16 +1,16 @@
 import { ObjectId } from "bson"; // core package
 
-export const availableAgentSorts = ["createdAt", "updatedAt", "memberLikes", "memberViews", "memberRank"];
+export const availableSellerSorts = ["createdAt", "updatedAt", "memberLikes", "memberViews", "memberRank"];
 export const availableMemberSorts = ["createdAt", "updatedAt", "memberLikes", "memberViews"];
 
-export const availableOptions = [`propertyBarter`, 'propertyRent'];
+export const availableOptions = [`productBarter`, 'productRent'];
 export const availablePropertySorts = [
 	'createdAt',
 	'updatedAt',
-	'propertyLikes',
-	'propertyViews',
-	'propertyRank',
-	'propertyPrice',
+	'productLikes',
+	'productViews',
+	'productRank',
+	'productPrice',
 ];
 
 export const availableBoardArticleSorts = [ "createdAt", "updatedAt", 'articleLikes', 'articleViews'];
