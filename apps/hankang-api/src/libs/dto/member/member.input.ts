@@ -3,6 +3,7 @@ import { IsIn, IsNotEmpty, IsOptional, Length, Min } from "class-validator";
 import { MemberAuthType, MemberStatus, MemberType } from "../../enums/member.enum";
 // import { availableAgentSorts, availableMemberSorts } from "../../config";
 import { Direction } from "../../enums/common.enum";
+import { availableMemberSorts, availableSellerSorts } from "../../config";
 
 // MEMBER.INPUT.TS incoming(kirib kelyotgan) malumot 
 
@@ -66,7 +67,7 @@ export class AgentsInquiry {
     limit: number;
 
     @IsOptional()
-    // @IsIn(availableAgentSorts)
+    @IsIn(availableSellerSorts)
     @Field(() => String, {nullable: true })
     sort: string;
 
@@ -110,7 +111,7 @@ export class MembersInquiry {
     limit: number;
 
     @IsOptional()
-    // @IsIn([availableMemberSorts])
+    @IsIn([availableMemberSorts])
     @Field(() => String, {nullable: true })
     sort: string;
 
