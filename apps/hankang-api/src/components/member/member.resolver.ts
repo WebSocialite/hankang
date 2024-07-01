@@ -106,16 +106,16 @@ export class MemberResolver {
 public async imageUploader(
 	@Args({ name: 'file', type: () => GraphQLUpload })
 { createReadStream, filename, mimetype }: FileUpload,
-@Args('target') target: String,
+@Args('target') target: String, // argumenti Target
 ): Promise<string> {
 	console.log('Mutation: imageUploader');
 
 	if (!filename) throw new Error(Message.UPLOAD_FAILED);
-const validMime = validMimeTypes.includes(mimetype);
+const validMime = validMimeTypes.includes(mimetype);  // biz serverga faqat JPG PNG JPEG file larni yuklashini permit qlamiz
 if (!validMime) throw new Error(Message.PROVIDE_ALLOWED_FORMAT);
 
 const imageName = getSerialForImage(filename);
-const url = `uploads/${target}/${imageName}`;
+const url = `uploads/${target}/${imageName}`; // uploads folder ning target nomli folderiga save qlishni buyurayapmiz
 const stream = createReadStream();
 
 const result = await new Promise((resolve, reject) => {

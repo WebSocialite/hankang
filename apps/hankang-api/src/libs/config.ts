@@ -24,7 +24,7 @@ import { T } from "./types/common";
 export const validMimeTypes = ['image/png', 'image/jpg', 'image/jpeg'];
 export const getSerialForImage = (filename: string) => {
 	const ext = path.parse(filename).ext;
-	return uuidv4() + ext;
+	return uuidv4() + ext;  // image upload package
 };
 
 export const shapeIntoMongoObjectId = (target: any) => {
