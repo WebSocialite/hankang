@@ -88,6 +88,16 @@ export class ProductResolver {
         return await this.productService.getAllProductsByAdmin( input);
     }
 
+    @Roles(MemberType.ADMIN)
+    @UseGuards(RolesGuard)
+    @Mutation((returns) => Product)
+    public async updateProductByAdmin(
+        @Args('input') input: ProductUpdate,
+    ) :Promise<Product> {
+        console.log("Query: updateProductByAdmin");
+        input._id = shapeIntoMongoObjectId(input._id);
+        return await this.productService.updateProductByAdmin( input);
+}
 
 
 }
