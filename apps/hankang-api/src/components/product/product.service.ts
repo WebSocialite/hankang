@@ -2,14 +2,13 @@ import { BadRequestException, Injectable, InternalServerErrorException } from '@
 import { InjectModel } from '@nestjs/mongoose';
 import { MemberService } from '../member/member.service';
 import { Direction, Message } from '../../libs/enums/common.enum';
-import { ProductInput, ProductsInquiry } from '../../libs/dto/product/product.input';
+import { ProductInput, ProductsInquiry, SellerProductsInquiry } from '../../libs/dto/product/product.input';
 import { Product, Products } from '../../libs/dto/product/product';
 import { Model, ObjectId } from 'mongoose';
 import { StatisticModifier, T } from '../../libs/types/common';
 import { ProductStatus } from '../../libs/enums/product.enum';
 import { ViewGroup } from '../../libs/enums/view.enum';
 import { ViewService } from '../view/view.service';
-import { LikeGroup } from '../../libs/enums/like.enum';
 import { ProductUpdate } from '../../libs/dto/product/product.update';
 import moment from 'moment';
 import { lookupAuthMemberLiked, lookupMember, shapeIntoMongoObjectId } from '../../libs/config';
@@ -141,6 +140,37 @@ private shapeMatchQuery (match: T, input: ProductsInquiry): void {
             return { [ele]: true }; 
         }) ;
     }
+}
+
+public async getSellerProducts(memberId: ObjectId, input: SellerProductsInquiry): Promise<Products> {
+    const { productStatus } = input.search;
+    if (productStatus === ProductStatus.DELETE) throw new BadRequestException(Message.NOT_ALLOWED_REQUEST);
+
+    const match: T = {memberId: memberId,
+        propertyStatus: productStatus ?? { $ne: ProductStatus.DELETE },
+    };
+
+    const sort: T = { [input?.sort ?? 'createdAt']: input?.direction ?? Direction.DESC };
+
+    const result = await this.productModel
+    .aggregate([
+        { $match: match },
+        { $sort: sort },
+        {
+            $facet: {
+                list:[
+                    { $skip: (input.page - 1) * input.limit },
+                    { $limit: input.limit },
+                    lookupMember,
+                    { $unwind: '$memberData' },
+                ],
+                metaCounter: [{ $count: 'total' }],
+            },
+        },
+    ])
+    .exec();
+    if (!result.length) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+    return result[0];
 }
 
 

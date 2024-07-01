@@ -13,7 +13,7 @@ import { shapeIntoMongoObjectId } from '../../libs/config';
 //import { ProductUpdate } from '../../libs/dto/product/product.update';
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { Product, Products } from '../../libs/dto/product/product';
-import { ProductInput, ProductsInquiry } from '../../libs/dto/product/product.input';
+import { ProductInput, ProductsInquiry, SellerProductsInquiry } from '../../libs/dto/product/product.input';
 import { ProductUpdate } from '../../libs/dto/product/product.update';
 
 @Resolver()
@@ -64,6 +64,17 @@ export class ProductResolver {
         return await this.productService.getProducts(memberId, input);
     }
 
+    @Roles(MemberType.SELLER)
+    @UseGuards(RolesGuard)
+    @Query((returns) => Products)
+    public async getSellerProducts(
+        @Args('input') input: SellerProductsInquiry,
+        @AuthMember('_id') memberId: ObjectId,
+    ) :Promise<Products> {
+        console.log("Mutation: getSellerProducts");
+        return await this.productService.getSellerProducts(memberId, input);
+
+}
 
 
 
