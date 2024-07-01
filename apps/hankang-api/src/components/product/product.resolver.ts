@@ -12,8 +12,8 @@ import { WithoutGuard } from '../auth/guards/without.guard';
 import { shapeIntoMongoObjectId } from '../../libs/config';
 //import { ProductUpdate } from '../../libs/dto/product/product.update';
 import { AuthGuard } from '../auth/guards/auth.guard';
-import { Product } from '../../libs/dto/product/product';
-import { ProductInput } from '../../libs/dto/product/product.input';
+import { Product, Products } from '../../libs/dto/product/product';
+import { ProductInput, ProductsInquiry } from '../../libs/dto/product/product.input';
 import { ProductUpdate } from '../../libs/dto/product/product.update';
 
 @Resolver()
@@ -54,6 +54,15 @@ export class ProductResolver {
         return await this.productService.updateProduct(memberId, input);
     }
 
+    @UseGuards(WithoutGuard)
+    @Query((returns) => Products)   // property me liked ni faqat userlar qila oladi agentlar qilsa bolmaydi
+    public async getProducts(
+        @Args('input') input: ProductsInquiry,
+        @AuthMember('_id') memberId: ObjectId,
+    ): Promise<Products> {
+        console.log('Query: getProducts');
+        return await this.productService.getProducts(memberId, input);
+    }
 
 
 
