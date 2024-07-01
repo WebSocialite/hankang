@@ -10,6 +10,8 @@ import { ProductStatus } from '../../libs/enums/product.enum';
 import { ViewGroup } from '../../libs/enums/view.enum';
 import { ViewService } from '../view/view.service';
 import { LikeGroup } from '../../libs/enums/like.enum';
+import { ProductUpdate } from '../../libs/dto/product/product.update';
+import moment from 'moment';
 
 
 @Injectable()
@@ -61,6 +63,32 @@ public async getProduct(memberId: ObjectId, productId: ObjectId): Promise<Produc
     //targetProduct.meLiked = await this.likeService.checkLikeExistence(likeInput);
  
     return targetProduct;
+}
+
+public async updateProduct (memberId: ObjectId, input: ProductUpdate): Promise<Product> {
+    let { productStatus, soldAt, deletedAt } = input;
+    const search: T = {
+        _id: input._id,
+        memberId: memberId,  // memId beryapmiz sababi faqat ozini producti bolsa update qilaolishligi uchun
+        productStatus: ProductStatus.ACTIVE,
+    };
+if (productStatus === ProductStatus.SOLD) soldAt = moment().toDate(); // SOLD bolgan vaqtni royhatga ovolayapmiz
+else if (productStatus === ProductStatus.DELETE) deletedAt = moment().toDate(); // DELETE bolgan vaqtni royhatga olyapmiz
+
+const result = await this.productModel.findOneAndUpdate(search, input, {
+    new: true,
+})
+.exec();
+if(!result) throw new InternalServerErrorException(Message.UPDATE_FAILED);
+
+if(soldAt || deletedAt) { // agar sold/ yoki deleted bolsa statistikasini -1 qil degan logic
+    await this.memberService.memberStatsEditor({
+        _id: memberId,
+        targetKey: 'memberProducts',
+        modifier: -1,
+    });
+}
+return result;
 }
 
 public async productStatsEditor( input: StatisticModifier): Promise<Product> {
