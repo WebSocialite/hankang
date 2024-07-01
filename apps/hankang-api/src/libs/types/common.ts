@@ -5,8 +5,8 @@ export interface T {
 }
 
 
-export interface StatisticModifier {
-    _id: ObjectId;
-    targetKey: string;
-    modifier: number;
+export interface StatisticModifier { //collection ni ihtiyoriy data collection ozgartirish uchun hizmat qiladi
+    _id: ObjectId;  // mongoose type
+    targetKey: string;  // nomini ozgartish 
+    modifier: number;  // qiymatini ozgartirish
 }

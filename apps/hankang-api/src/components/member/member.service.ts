@@ -3,11 +3,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { Member, Members } from '../../libs/dto/member/member';
 import { Direction, Message } from '../../libs/enums/common.enum';
-import { AgentsInquiry, LoginInput, MemberInput, MembersInquiry } from '../../libs/dto/member/member.input';
+import { LoginInput, MemberInput, MembersInquiry, SellersInquiry } from '../../libs/dto/member/member.input';
 import { MemberStatus, MemberType } from '../../libs/enums/member.enum';
 import { AuthService } from '../auth/auth.service';
 import { MemberUpdate } from '../../libs/dto/member/member.update';
-import { T } from '../../libs/types/common';
+import { StatisticModifier, T } from '../../libs/types/common';
 import { ViewGroup } from '../../libs/enums/view.enum';
 import { ViewService } from '../view/view.service';
 import { ViewInput } from '../../libs/dto/view/view.input';
@@ -15,6 +15,7 @@ import { lookupAuthMemberLiked } from '../../libs/config';
 
 @Injectable()
 export class MemberService {
+
   constructor(@InjectModel("Member") private readonly memberModel: Model<Member>,
   private authService: AuthService,
   private viewService: ViewService,
@@ -98,7 +99,7 @@ public async login(input: LoginInput): Promise<Member> {
   }
 return targetMember;
 }
-public async getAgents(memberId: ObjectId, input: AgentsInquiry): Promise<Members> {
+public async getSellers(memberId: ObjectId, input: SellersInquiry): Promise<Members> {
   const {text} = input.search;
   const match: T = { memberType: MemberType.SELLER, memberStatus: MemberStatus.ACTIVE };
   const sort: T = { [input?.sort ?? "createdAt"]: input?.direction ?? Direction.DESC }; // agar sort va direction kiritilmagan bolsa bu yerda CreatedAt boladi va DESC (yuqoridan pasga)
@@ -147,12 +148,23 @@ public async getAgents(memberId: ObjectId, input: AgentsInquiry): Promise<Member
   return result[0];
 }
 
-     public async updateMemberByAdmin(input: MemberUpdate): Promise<Member> {
-      const result: Member = await this.memberModel.findOneAndUpdate({_id: input._id}, input, { new: true }).exec();
-      if(!result) throw new InternalServerErrorException(Message.UPDATE_FAILED);
-      return result;
-     }
-  
+public async updateMemberByAdmin(input: MemberUpdate): Promise<Member> {
+  const result: Member = await this.memberModel.findOneAndUpdate({_id: input._id}, input, { new: true }).exec();
+  if(!result) throw new InternalServerErrorException(Message.UPDATE_FAILED);
+  return result;
+}
+
+public async memberStatsEditor(input: StatisticModifier): Promise<Member> {
+  const { _id, targetKey, modifier } = input;
+  return await this.memberModel.findByIdAndUpdate(_id,
+     { 
+      $inc: { [targetKey]: modifier }
+    },
+     { 
+      new: true })
+      .exec();// statistikani ozgartiradigan logic yani Product add qlinsa +1 boladi
+ }
+
 
 
     }

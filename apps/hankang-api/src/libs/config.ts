@@ -4,7 +4,7 @@ export const availableSellerSorts = ["createdAt", "updatedAt", "memberLikes", "m
 export const availableMemberSorts = ["createdAt", "updatedAt", "memberLikes", "memberViews"];
 
 export const availableOptions = [`productBarter`, 'productRent'];
-export const availablePropertySorts = [
+export const availableProductSorts = [
 	'createdAt',
 	'updatedAt',
 	'productLikes',
