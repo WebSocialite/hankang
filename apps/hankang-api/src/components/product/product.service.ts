@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, InternalServerErrorException } from '@
 import { InjectModel } from '@nestjs/mongoose';
 import { MemberService } from '../member/member.service';
 import { Direction, Message } from '../../libs/enums/common.enum';
-import { ProductInput, ProductsInquiry, SellerProductsInquiry } from '../../libs/dto/product/product.input';
+import { AllProductsInquiry, ProductInput, ProductsInquiry, SellerProductsInquiry } from '../../libs/dto/product/product.input';
 import { Product, Products } from '../../libs/dto/product/product';
 import { Model, ObjectId } from 'mongoose';
 import { StatisticModifier, T } from '../../libs/types/common';
@@ -182,6 +182,41 @@ public async productStatsEditor( input: StatisticModifier): Promise<Product> {
         {$inc: { [targetKey]: modifier } },
         { new: true, },
     ).exec();
+}
+
+
+
+
+
+
+//**                        ADMIN LOGIC                  */
+public async getAllProductsByAdmin (input: AllProductsInquiry): Promise<Products> {
+    const { productStatus } = input.search;
+    const match: T = { };
+    const sort: T = { [input?.sort ?? 'createdAt']: input?.direction ?? Direction.DESC };
+
+    if(productStatus) match.productStatus = productStatus;
+
+    const result = await this.productModel
+    .aggregate([
+        { $match: match },
+        { $sort: sort },
+        {
+            $facet: {
+                list: [
+                    { $skip: ( input.page - 1) * input.limit },
+                    { $limit: input.limit },
+                    // me Liked 
+                    lookupMember,
+                    { $unwind: '$memberData'}, // unwind arrayni ichidagi datani olib beradi Arrayni esa tashlavoradi
+                ],
+                metaCounter: [{ $count: 'total'}],
+            },
+        },
+    ])
+    .exec();
+    if (!result.length) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+    return result[0];
 }
 
 
