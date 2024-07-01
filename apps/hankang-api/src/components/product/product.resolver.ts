@@ -30,6 +30,18 @@ export class ProductResolver {
         input.memberId = memberId; // lyuboy member birovni nomidan request qilolmasligi uchun
         return await this.productService.createProduct(input);
     }
+    @UseGuards(WithoutGuard)
+    @Query((returns) => Product)
+    public async getProduct(
+        @Args('productId') input: string,
+        @AuthMember('_id') memberId: ObjectId,
+    ) :Promise<Product> {
+        console.log("Query: getProduct");
+        const productId = shapeIntoMongoObjectId(input);
+        return await this.productService.getProduct(memberId, productId);
+    }
 
 
+
+    
 }
