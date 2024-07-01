@@ -99,5 +99,15 @@ export class ProductResolver {
         return await this.productService.updateProductByAdmin( input);
 }
 
+    @Roles(MemberType.ADMIN)
+    @UseGuards(RolesGuard)
+    @Mutation((returns) => Product)
+    public async removeProductByAdmin(
+    @Args('productId') input: string) :Promise<Product> {
+    console.log("Query: removeProductByAdmin");
+    const productId = shapeIntoMongoObjectId(input);
+    return await this.productService.removeProductByAdmin(productId);
+}
+
 
 }

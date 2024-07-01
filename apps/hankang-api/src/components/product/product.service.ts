@@ -10,7 +10,7 @@ import { ProductStatus } from '../../libs/enums/product.enum';
 import { ViewGroup } from '../../libs/enums/view.enum';
 import { ViewService } from '../view/view.service';
 import { ProductUpdate } from '../../libs/dto/product/product.update';
-import moment from 'moment';
+import * as moment from 'moment';
 import { lookupAuthMemberLiked, lookupMember, shapeIntoMongoObjectId } from '../../libs/config';
 
 
@@ -242,6 +242,14 @@ if(soldAt || deletedAt) {
     });
 }
 return result;
+}
+
+public async removeProductByAdmin (productId: ObjectId): Promise<Product> {
+    const search: T = { _id: productId, productStatus: ProductStatus.DELETE }; //faqat deleted bulgan holdagina remove qilsa buladi, yani active yoki sold bulsa remove qilib bolmaydi
+    const result = await this.productModel.findOneAndDelete(search).exec();
+    if(!result) throw new InternalServerErrorException(Message.REMOVE_FAILED);
+
+    return result;
 }
 
 
