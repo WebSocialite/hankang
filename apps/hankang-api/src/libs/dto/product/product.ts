@@ -2,6 +2,7 @@ import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { ObjectId } from "mongoose";
 import { ProductStatus, ProductType } from "../../enums/product.enum";
 import { Member, TotalCounter } from "../member/member";
+import { MeLiked } from "../like/like";
 //import { MeLiked } from "../like/like";
 
 
@@ -64,8 +65,8 @@ export class Product {
 
     /** FROM AGGREGATION **/
 
-   // @Field(() => [MeLiked], { nullable: true})
-   // meLiked?: MeLiked[];
+   @Field(() => [MeLiked], { nullable: true})
+   meLiked?: MeLiked[];
 
     @Field(() => Member, { nullable : true})
     memberData?: Member;

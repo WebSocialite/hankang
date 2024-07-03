@@ -138,9 +138,9 @@ export const lookupFavorite = {
 
 export const lookupVisit = {
 	$lookup: {
-		from: 'members',
+		from: 'members',  // collection name 
 		localField: 'visitedProperty.memberId',
 		foreignField: '_id',
-		as: 'visitedProperty.memberData',
+		as: 'visitedProperty.memberData', // save as ...
 	},
 };

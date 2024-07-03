@@ -62,8 +62,8 @@ public async getProduct(memberId: ObjectId, productId: ObjectId): Promise<Produc
 }
     targetProduct.memberData = await this.memberService.getMember(null, targetProduct.memberId);  // product.ts dan memberdatani olibkeldik
     //me liked
-    //const likeInput = {memberId: memberId, likeRefId: productId, likeGroup: LikeGroup.PRODUCT};
-    //targetProduct.meLiked = await this.likeService.checkLikeExistence(likeInput);
+    const likeInput = {memberId: memberId, likeRefId: productId, likeGroup: LikeGroup.PRODUCT};
+    targetProduct.meLiked = await this.likeService.checkLikeExistence(likeInput);
  
     return targetProduct;
 }

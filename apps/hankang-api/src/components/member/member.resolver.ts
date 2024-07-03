@@ -70,6 +70,8 @@ export class MemberResolver {
         const targetId = shapeIntoMongoObjectId(input);
         return await this.memberService.getMember(memberId, targetId);
     }
+
+    
     @UseGuards(WithoutGuard)
     @Query(() => Members)
     public async getSellers(

@@ -15,6 +15,6 @@ const FollowSchema = new Schema(
 	{ timestamps: true, collection: "follows" },
 );
 
-FollowSchema.index({ followingId: 1, followerId: 1 }, { unique: true });
+FollowSchema.index({ followingId: 1, followerId: 1 }, { unique: true });  // followerId - bu biz; followingId biz follow qilmoqchi bolgan odam
 
 export default FollowSchema;

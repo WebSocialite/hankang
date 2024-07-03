@@ -46,7 +46,7 @@ export class LikeService {
 
 
 
-    public async getFavoriteProperties(memberId: ObjectId, input: OrdinaryInquiry): Promise<Products> {
+    public async getFavoriteProducts(memberId: ObjectId, input: OrdinaryInquiry): Promise<Products> {
         const { page, limit } = input;
         const match: T = { likeGroup: LikeGroup.PRODUCT, memberId: memberId};
 
@@ -55,20 +55,20 @@ export class LikeService {
             { $sort: { updatedAt: -1 } },
             {
                 $lookup: {
-                    from: "properties",
+                    from: "products",
                     localField: "likeRefId",
                     foreignField: "_id",
-                    as: "favoriteProperty",
+                    as: "favoriteProduct",
                 },
             },
-            { $unwind: "$favoriteProperty" },
+            { $unwind: "$favoriteProduct" },
             {
                 $facet: {
                     list: [
                         { $skip: (page - 1) * limit },
                         { $limit: limit },
                         lookupFavorite,
-                        { $unwind: "$favoriteProperty.memberData" },
+                        { $unwind: "$favoriteProduct.memberData" },
                     ],
                     metaCounter: [{ $count: 'total' }],
                 },

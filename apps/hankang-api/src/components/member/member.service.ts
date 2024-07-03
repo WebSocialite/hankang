@@ -100,6 +100,17 @@ public async login(input: LoginInput): Promise<Member> {
         targetMember.memberViews++;
     }
 
+     //  me liked
+        const likeInput = {memberId: memberId, likeRefId: targetId, likeGroup: LikeGroup.MEMBER};
+        targetMember.meLiked = await this.likeService.checkLikeExistence(likeInput);
+        console.log('Like checked:', targetMember.meLiked);
+    
+       // targetMember.meFollowed = await this.checkSubscription(memberId, targetId);
+
+    
+
+
+
   }
 return targetMember;
 }
@@ -297,14 +308,7 @@ public async memberStatsEditor(input: StatisticModifier): Promise<Member> {
 //             await this.memberModel.findOneAndUpdate(search, { $inc: { memberViews: 1 }}, { new: true}).exec();
 //             targetMember.memberViews++;
 //         }
-//     //me liked
-//         const likeInput = {memberId: memberId, likeRefId: targetId, likeGroup: LikeGroup.MEMBER};
-//         targetMember.meLiked = await this.likeService.checkLikeExistence(likeInput);
-//         console.log('Like checked:', targetMember.meLiked);
-    
-//         targetMember.meFollowed = await this.checkSubscription(memberId, targetId);
-
-//     }
+//     
 
 //   return targetMember;
 //  }
