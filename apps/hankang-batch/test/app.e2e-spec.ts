@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { HankangBatchModule } from './../src/hankang-batch.module';
+import { HankangBatchModule } from '../src/batch.module';
 
 describe('HankangBatchController (e2e)', () => {
   let app: INestApplication;

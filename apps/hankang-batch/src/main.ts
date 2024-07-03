@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { HankangBatchModule } from './hankang-batch.module';
+import { HankangBatchModule } from './batch.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(HankangBatchModule);
