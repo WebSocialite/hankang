@@ -91,7 +91,7 @@ export class CommentService {
     }
 
     public async removeCommentByAdmin (input: ObjectId): Promise<Comment> {
-        const result = await this.commentModel.findByIdAndDelete(input);
+        const result = await this.commentModel.findByIdAndDelete(input); // bu yerda tugridan tugri database dan ochirishni mumkun qilyapmiz sababi commentla o'ta muhum narsa emas
         if(!result) throw new InternalServerErrorException(Message.REMOVE_FAILED);
         return result;
 }
