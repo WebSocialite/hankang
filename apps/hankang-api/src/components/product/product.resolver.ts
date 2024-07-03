@@ -75,15 +75,15 @@ export class ProductResolver {
     }
 
 
-    // @UseGuards(AuthGuard)
-    // @Query((returns) => Products)   
-    // public async getVisited(
-    //     @Args('input') input: OrdinaryInquiry, // backendga kirib kelishga qadar bulgan validationni qabul qladi
-    //     @AuthMember('_id') memberId: ObjectId,  // Authmember param decoratorida memberId ni hosil qilyapmiz
-    // ): Promise<Products> {
-    //     console.log('Query: getVisited');
-    //     return await this.productService.getVisited(memberId, input);
-    // }
+    @UseGuards(AuthGuard)
+    @Query((returns) => Products)   
+    public async getVisited(
+        @Args('input') input: OrdinaryInquiry, // backendga kirib kelishga qadar bulgan validationni qabul qladi
+        @AuthMember('_id') memberId: ObjectId,  // Authmember param decoratorida memberId ni hosil qilyapmiz
+    ): Promise<Products> {
+        console.log('Query: getVisited');
+        return await this.productService.getVisited(memberId, input);
+    }
 
 
 

@@ -149,9 +149,9 @@ public async getFavorites(memberId: ObjectId, input: OrdinaryInquiry): Promise<P
     return await this.likeService.getFavoriteProducts(memberId, input);
 }
 
-// public async getVisited(memberId: ObjectId, input: OrdinaryInquiry): Promise<Products> {
-//     return await this.viewService.getVisitedProducts(memberId, input);
-// }
+public async getVisited(memberId: ObjectId, input: OrdinaryInquiry): Promise<Products> {
+    return await this.viewService.getVisitedProducts(memberId, input);
+}
 
 
 public async getSellerProducts(memberId: ObjectId, input: SellerProductsInquiry): Promise<Products> {
