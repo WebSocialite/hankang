@@ -13,6 +13,7 @@ import { T } from './libs/types/common';
 // import { T } from './libs/types/common';
 // import { SocketModule } from './socket/socket.module';
 import { AuthService } from './components/auth/auth.service';
+import { SocketModule } from './socket/socket.module';
 
 @Module({ //GRAPH QL API BACKEND SERVERINI TASHKIL QILYAPMIZ!!!!!
   imports: [
@@ -32,7 +33,7 @@ import { AuthService } from './components/auth/auth.service';
       },
     }),
     ComponentsModule,  // App modulemiz shu components module dan iborat boladi
-    DatabaseModule,
+    DatabaseModule, SocketModule,
     
   ],
   controllers: [AppController],
