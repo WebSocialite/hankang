@@ -2,6 +2,7 @@ import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { MemberAuthType, MemberStatus, MemberType } from "../../enums/member.enum";
 import { ObjectId } from "mongoose";
 import { MeLiked } from "../like/like";
+import { MeFollowed } from "../follow/follow";
 // import { MeFollowed } from "../follow/follow";
 
 // MEMBER.TS outgoing(chiqib ketyotgan malumot)
@@ -89,8 +90,8 @@ export class Member {
     @Field(() => [MeLiked], { nullable: true})
     meLiked?: MeLiked[];
 
-    // @Field(() => [MeFollowed], { nullable: true})
-    // meFollowed?: MeFollowed[];
+    @Field(() => [MeFollowed], { nullable: true})
+    meFollowed?: MeFollowed[];
 }
 
 @ObjectType()
