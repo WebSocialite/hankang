@@ -73,8 +73,21 @@ export class ProductResolver {
     ) :Promise<Products> {
         console.log("Mutation: getSellerProducts");
         return await this.productService.getSellerProducts(memberId, input);
-
 }
+
+    //**                    Like logic               */
+
+    @UseGuards(AuthGuard) 
+    @Mutation(() => Product)
+     public async likeTargetProduct
+     (@Args("memberId") input: string,
+      @AuthMember('_id') memberId: ObjectId
+    ): Promise<Product> {
+        console.log("Query: likeTargetProduct");
+        const likeRefId = shapeIntoMongoObjectId(input);
+        return await this.productService.likeTargetProduct(memberId, likeRefId);
+    }
+
 
 
 @Roles(MemberType.ADMIN)

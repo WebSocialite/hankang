@@ -12,6 +12,9 @@ import { ViewService } from '../view/view.service';
 import { ProductUpdate } from '../../libs/dto/product/product.update';
 import * as moment from 'moment';
 import { lookupAuthMemberLiked, lookupMember, shapeIntoMongoObjectId } from '../../libs/config';
+import { LikeInput } from '../../libs/dto/like/like.input';
+import { LikeGroup } from '../../libs/enums/like.enum';
+import { LikeService } from '../like/like.service';
 
 
 @Injectable()
@@ -21,7 +24,7 @@ export class ProductService {
         @InjectModel('Product') private readonly productModel: Model<Product>, 
     private memberService: MemberService, // module da import qilganmmiz
     private viewService: ViewService,
-    //private likeService: LikeService,
+    private likeService: LikeService,
 ) {}
 
 public async createProduct(input: ProductInput): Promise<Product> {
@@ -173,7 +176,26 @@ public async getSellerProducts(memberId: ObjectId, input: SellerProductsInquiry)
     return result[0];
 }
 
+ //**             LIKE TARGET MEMBER                   **/
 
+ public async likeTargetProduct(memberId: ObjectId, likeRefId: ObjectId): Promise<Product> {
+    const target: Product = await this.productModel.findOne({_id: likeRefId, productStatus: ProductStatus.ACTIVE}).exec();
+    if(!target) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+
+    const input: LikeInput = { 
+        memberId: memberId,
+        likeRefId: likeRefId,
+        likeGroup: LikeGroup.PRODUCT,
+    };
+
+    // LIKE TOGGLE via Like modules;   // toggle bizga like qoyilganda -1 qoyilmaganda +1 qlib beradi
+    const modifier: number = await this.likeService.toggleLike(input);
+    const result = await this.productStatsEditor({_id:  likeRefId, targetKey: "productLikes", modifier: modifier });
+
+    if(!result) throw new InternalServerErrorException(Message.SOMETHING_WENT_WRONG);
+    return result;
+
+   }
 
 public async productStatsEditor( input: StatisticModifier): Promise<Product> {
     const { _id, targetKey, modifier } = input;
