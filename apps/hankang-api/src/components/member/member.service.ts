@@ -12,6 +12,9 @@ import { ViewGroup } from '../../libs/enums/view.enum';
 import { ViewService } from '../view/view.service';
 import { ViewInput } from '../../libs/dto/view/view.input';
 import { lookupAuthMemberLiked } from '../../libs/config';
+import { LikeInput } from '../../libs/dto/like/like.input';
+import { LikeGroup } from '../../libs/enums/like.enum';
+import { LikeService } from '../like/like.service';
 
 @Injectable()
 export class MemberService {
@@ -19,6 +22,7 @@ export class MemberService {
   constructor(@InjectModel("Member") private readonly memberModel: Model<Member>,
   private authService: AuthService,
   private viewService: ViewService,
+  private likeService: LikeService,
 
 ) {}
 
@@ -123,6 +127,30 @@ public async getSellers(memberId: ObjectId, input: SellersInquiry): Promise<Memb
   return result[0];
  }
 
+   //**             LIKE TARGET MEMBER                   **/
+
+   public async likeTargetMember(memberId: ObjectId, likeRefId: ObjectId): Promise<Member> {
+    const target: Member = await this.memberModel.findOne({_id: likeRefId, memberStatus: MemberStatus.ACTIVE}).exec();
+    if(!target) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+
+    const input: LikeInput = { 
+        memberId: memberId,
+        likeRefId: likeRefId,
+        likeGroup: LikeGroup.MEMBER
+    };
+
+    // LIKE TOGGLE via Like modules;   // toggle bizga like qoyilganda -1 qoyilmaganda +1 qlib beradi
+    const modifier: number = await this.likeService.toggleLike(input);
+    const result = await this.memberStatsEditor({_id:  likeRefId, targetKey: "memberLikes", modifier: modifier });
+
+    if(!result) throw new InternalServerErrorException(Message.SOMETHING_WENT_WRONG);
+    return result;
+
+   }
+
+
+
+ /**         ADMIN only        **/
 
  public async getAllMembersByAdmin(input: MembersInquiry): Promise<Members> {
   const {memberStatus, memberType, text} = input.search;
@@ -310,26 +338,7 @@ public async memberStatsEditor(input: StatisticModifier): Promise<Member> {
 //     return result[0];
 //    }
 
-//    //**             LIKE TARGET MEMBER                   **/
 
-//    public async likeTargetMember(memberId: ObjectId, likeRefId: ObjectId): Promise<Member> {
-//     const target: Member = await this.memberModel.findOne({_id: likeRefId, memberStatus: MemberStatus.ACTIVE}).exec();
-//     if(!target) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
-
-//     const input: LikeInput = { 
-//         memberId: memberId,
-//         likeRefId: likeRefId,
-//         likeGroup: LikeGroup.MEMBER
-//     };
-
-//     // LIKE TOGGLE via Like modules;
-//     const modifier: number = await this.likeService.toggleLike(input);
-//     const result = await this.memberStatsEditor({_id:  likeRefId, targetKey: "memberLikes", modifier: modifier });
-
-//     if(!result) throw new InternalServerErrorException(Message.SOMETHING_WENT_WRONG);
-//     return result;
-
-//    }
 
  
 //  public async getAllMembersByAdmin(input: MembersInquiry): Promise<Members> {
