@@ -16,7 +16,7 @@ import { lookupMember } from '../../libs/config';
 export class CommentService {
     constructor(@InjectModel('Comment') private readonly commentModel: Model<Comment>,
     private memberService: MemberService,
-    private propertyService: ProductService,
+    private productService: ProductService,
     private boardArticleService: BoardArticleService,
 ) {}
 
@@ -32,7 +32,7 @@ export class CommentService {
          }
          switch (input.commentGroup) {
             case CommentGroup.PRODUCT:
-            await this.propertyService.productStatsEditor({ 
+            await this.productService.productStatsEditor({ 
                 _id: input.commentRefId, 
                 targetKey: 'productComments', 
                 modifier: 1,

@@ -13,7 +13,7 @@ import { shapeIntoMongoObjectId } from '../../libs/config';
 //import { ProductUpdate } from '../../libs/dto/product/product.update';
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { Product, Products } from '../../libs/dto/product/product';
-import { AllProductsInquiry, ProductInput, ProductsInquiry, SellerProductsInquiry } from '../../libs/dto/product/product.input';
+import { AllProductsInquiry, OrdinaryInquiry, ProductInput, ProductsInquiry, SellerProductsInquiry } from '../../libs/dto/product/product.input';
 import { ProductUpdate } from '../../libs/dto/product/product.update';
 
 @Resolver()
@@ -55,7 +55,7 @@ export class ProductResolver {
     }
 
     @UseGuards(WithoutGuard)
-    @Query((returns) => Products)   // property me liked ni faqat userlar qila oladi agentlar qilsa bolmaydi
+    @Query((returns) => Products)   // product me liked ni faqat userlar qila oladi agentlar qilsa bolmaydi
     public async getProducts(
         @Args('input') input: ProductsInquiry,
         @AuthMember('_id') memberId: ObjectId,
@@ -63,6 +63,29 @@ export class ProductResolver {
         console.log('Query: getProducts');
         return await this.productService.getProducts(memberId, input);
     }
+
+    @UseGuards(AuthGuard)
+    @Query((returns) => Products)   
+    public async getFavorites(
+        @Args('input') input: OrdinaryInquiry, // backendga kirib kelishga qadar bulgan validationni qabul qladi
+        @AuthMember('_id') memberId: ObjectId,  // Authmember param decoratorida memberId ni hosil qilyapmiz
+    ): Promise<Products> {
+        console.log('Query: getFavorites');
+        return await this.productService.getFavorites(memberId, input);
+    }
+
+
+    // @UseGuards(AuthGuard)
+    // @Query((returns) => Products)   
+    // public async getVisited(
+    //     @Args('input') input: OrdinaryInquiry, // backendga kirib kelishga qadar bulgan validationni qabul qladi
+    //     @AuthMember('_id') memberId: ObjectId,  // Authmember param decoratorida memberId ni hosil qilyapmiz
+    // ): Promise<Products> {
+    //     console.log('Query: getVisited');
+    //     return await this.productService.getVisited(memberId, input);
+    // }
+
+
 
     @Roles(MemberType.SELLER)
     @UseGuards(RolesGuard)

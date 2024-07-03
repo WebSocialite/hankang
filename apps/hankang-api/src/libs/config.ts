@@ -127,20 +127,20 @@ export const lookupFollowerData = {
 	},
 };
 
-export const lookupFavorite = {
+export const lookupFavorite = {  // favoritesdan 
 	$lookup: {
 		from: 'members',
-		localField: 'favoriteProperty.memberId',
+		localField: 'favoriteProduct.memberId',
 		foreignField: '_id',
-		as: 'favoriteProperty.memberData',
+		as: 'favoriteProduct.memberData',
 	},
 };
 
 export const lookupVisit = {
 	$lookup: {
 		from: 'members',  // collection name 
-		localField: 'visitedProperty.memberId',
+		localField: 'visitedProduct.memberId',
 		foreignField: '_id',
-		as: 'visitedProperty.memberData', // save as ...
+		as: 'visitedProduct.memberData', // save as ...
 	},
 };

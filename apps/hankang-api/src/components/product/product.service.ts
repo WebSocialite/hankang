@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, InternalServerErrorException } from '@
 import { InjectModel } from '@nestjs/mongoose';
 import { MemberService } from '../member/member.service';
 import { Direction, Message } from '../../libs/enums/common.enum';
-import { AllProductsInquiry, ProductInput, ProductsInquiry, SellerProductsInquiry } from '../../libs/dto/product/product.input';
+import { AllProductsInquiry, OrdinaryInquiry, ProductInput, ProductsInquiry, SellerProductsInquiry } from '../../libs/dto/product/product.input';
 import { Product, Products } from '../../libs/dto/product/product';
 import { Model, ObjectId } from 'mongoose';
 import { StatisticModifier, T } from '../../libs/types/common';
@@ -135,9 +135,9 @@ private shapeMatchQuery (match: T, input: ProductsInquiry): void {
     if(memberId) match.memberId = shapeIntoMongoObjectId(memberId);
     if(typeList && typeList.length) match.productType = { $in: typeList };
 
-    if(pricesRange) match.propertyPrice = { $gte: pricesRange.start, $lte: pricesRange.end }; // gte = greater than or equal
+    if(pricesRange) match.productPrice = { $gte: pricesRange.start, $lte: pricesRange.end }; // gte = greater than or equal
 
-    if(text) match.propertyTitle = { $regex: new RegExp(text, 'i') };
+    if(text) match.productTitle = { $regex: new RegExp(text, 'i') };
     if(options) { 
         match['$or'] = options.map((ele) => {
             return { [ele]: true }; 
@@ -145,12 +145,21 @@ private shapeMatchQuery (match: T, input: ProductsInquiry): void {
     }
 }
 
+public async getFavorites(memberId: ObjectId, input: OrdinaryInquiry): Promise<Products> {
+    return await this.likeService.getFavoriteProducts(memberId, input);
+}
+
+// public async getVisited(memberId: ObjectId, input: OrdinaryInquiry): Promise<Products> {
+//     return await this.viewService.getVisitedProducts(memberId, input);
+// }
+
+
 public async getSellerProducts(memberId: ObjectId, input: SellerProductsInquiry): Promise<Products> {
     const { productStatus } = input.search;
     if (productStatus === ProductStatus.DELETE) throw new BadRequestException(Message.NOT_ALLOWED_REQUEST);
 
     const match: T = {memberId: memberId,
-        propertyStatus: productStatus ?? { $ne: ProductStatus.DELETE },
+        productStatus: productStatus ?? { $ne: ProductStatus.DELETE },
     };
 
     const sort: T = { [input?.sort ?? 'createdAt']: input?.direction ?? Direction.DESC };

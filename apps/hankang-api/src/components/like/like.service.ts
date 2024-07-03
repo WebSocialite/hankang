@@ -52,20 +52,20 @@ export class LikeService {
 
         const data: T = await this.likeModel.aggregate([
             { $match: match}, 
-            { $sort: { updatedAt: -1 } },
+            { $sort: { updatedAt: -1 } },  
             {
-                $lookup: {
-                    from: "products",
+                $lookup: {  // topiberish logic
+                    from: "products",  // products ga bosilgan log larni olib beradi
                     localField: "likeRefId",
-                    foreignField: "_id",
-                    as: "favoriteProduct",
+                    foreignField: "_id",   // product collection da ID ga teng ni olib beradi
+                    as: "favoriteProduct", // nomi shunaqa busin dyapmiz
                 },
             },
-            { $unwind: "$favoriteProduct" },
+            { $unwind: "$favoriteProduct" },  // qabul qilingan datani arrayda chiqarish logic
             {
                 $facet: {
                     list: [
-                        { $skip: (page - 1) * limit },
+                        { $skip: (page - 1) * limit },  
                         { $limit: limit },
                         lookupFavorite,
                         { $unwind: "$favoriteProduct.memberData" },
@@ -77,8 +77,8 @@ export class LikeService {
         .exec();
         console.log("data:", data);
          const result: Products = { list: [], metaCounter: data[0].metaCounter};
-         console.log( result);
-         result.list = data[0].list.map((ele) => ele.favoriteProperty);
+         console.log(result);
+         result.list = data[0].list.map((ele) => ele.favoriteProduct);
         return result;
     }
 }

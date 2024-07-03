@@ -118,7 +118,7 @@ export class BoardArticleService {
         console.log("RESULT", result[0]);
         return result[0];
     }
-      //**             LIKE TARGET PROPERTY                   **/
+      //**             LIKE TARGET PRODUCT                   **/
    public async likeTargetBoardArticle(memberId: ObjectId, likeRefId: ObjectId): Promise<BoardArticle> {
     const target: BoardArticle = await this.boardArticleModel
    
