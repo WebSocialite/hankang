@@ -61,16 +61,16 @@ export class BoardArticleResolver {
 
  //**                    Like logic               */
 
-    // @UseGuards(AuthGuard) 
-    // @Mutation(() => BoardArticle)
-    //  public async likeTargetBoardArticle
-    //  (@Args("articleId") input: string,
-    //   @AuthMember('_id') memberId: ObjectId
-    // ): Promise<BoardArticle> {
-    //     console.log("Query: likeTargetBoardArticle");
-    //     const likeRefId = shapeIntoMongoObjectId(input);
-    //     return await this.boardArticleService.likeTargetBoardArticle(memberId, likeRefId);
-    // }
+    @UseGuards(AuthGuard) 
+    @Mutation(() => BoardArticle)
+     public async likeTargetBoardArticle
+     (@Args("articleId") input: string,
+      @AuthMember('_id') memberId: ObjectId
+    ): Promise<BoardArticle> {
+        console.log("Query: likeTargetBoardArticle");
+        const likeRefId = shapeIntoMongoObjectId(input);
+        return await this.boardArticleService.likeTargetBoardArticle(memberId, likeRefId);
+    }
 
 
 
