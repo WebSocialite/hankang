@@ -128,21 +128,13 @@ private shapeMatchQuery (match: T, input: ProductsInquiry): void {
     const {
         memberId,
         pricesRange,
-        options,
         typeList,
         text,
     } = input.search;
     if(memberId) match.memberId = shapeIntoMongoObjectId(memberId);
     if(typeList && typeList.length) match.productType = { $in: typeList };
-
     if(pricesRange) match.productPrice = { $gte: pricesRange.start, $lte: pricesRange.end }; // gte = greater than or equal
-
     if(text) match.productTitle = { $regex: new RegExp(text, 'i') };
-    if(options) { 
-        match['$or'] = options.map((ele) => {
-            return { [ele]: true }; 
-        }) ;
-    }
 }
 
 public async getFavorites(memberId: ObjectId, input: OrdinaryInquiry): Promise<Products> {

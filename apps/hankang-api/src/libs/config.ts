@@ -3,7 +3,7 @@ import { ObjectId } from "bson"; // core package
 export const availableSellerSorts = ["createdAt", "updatedAt", "memberLikes", "memberViews", "memberRank"];
 export const availableMemberSorts = ["createdAt", "updatedAt", "memberLikes", "memberViews"];
 
-export const availableOptions = [`productBarter`, 'productRent'];
+//export const availableOptions = [`productBarter`, 'productRent'];
 export const availableProductSorts = [
 	'createdAt',
 	'updatedAt',

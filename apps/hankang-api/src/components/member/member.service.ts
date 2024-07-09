@@ -138,6 +138,8 @@ public async getSellers(memberId: ObjectId, input: SellersInquiry): Promise<Memb
 
   ]).exec();
   if(!result.length) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+  console.log("member result:", result);
+  
   return result[0];
  }
 

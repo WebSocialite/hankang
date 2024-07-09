@@ -2,8 +2,9 @@ import { Field, InputType, Int } from "@nestjs/graphql";
 import { IsIn, IsNotEmpty, IsOptional, Length, Min } from "class-validator";
 import { ProductStatus, ProductType } from "../../enums/product.enum";
 import { ObjectId } from "mongoose";
-import { availableOptions, availableProductSorts } from "../../config";
+//import { availableOptions, availableProductSorts } from "../../config";
 import { Direction } from "../../enums/common.enum";
+import { availableProductSorts } from "../../config";
 
 
 @InputType()
@@ -79,10 +80,10 @@ export class ProductInput {
     @Field(() => [ProductType], { nullable: true })
     typeList?: ProductType[];
 
-    @IsOptional()
-    @IsIn(availableOptions, { each: true})
-    @Field(() => [String], { nullable: true })
-    options?: string[];
+    // @IsOptional()
+    // @IsIn(availableOptions, { each: true})
+    // @Field(() => [String], { nullable: true })
+    // options?: string[];
 
     @IsOptional()
     @Field(() => PricesRange, { nullable: true })

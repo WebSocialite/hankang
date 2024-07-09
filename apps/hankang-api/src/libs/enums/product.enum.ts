@@ -10,7 +10,7 @@ registerEnumType(ProductType, {
 });
 
 export enum ProductStatus {
-	ACTIVE = 'ACTTIVE',
+	ACTIVE = 'ACTIVE',
 	SOLD = 'SOLD OUT',
 	DELETE = 'DELETE',
 }

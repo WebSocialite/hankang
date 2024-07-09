@@ -103,12 +103,12 @@ export class ProductResolver {
     @UseGuards(AuthGuard) 
     @Mutation(() => Product)
      public async likeTargetProduct
-     (@Args("memberId") input: string,
-      @AuthMember('_id') memberId: ObjectId
+     (@Args("productId") input: string,
+      @AuthMember('_id') propertyId: ObjectId
     ): Promise<Product> {
         console.log("Query: likeTargetProduct");
         const likeRefId = shapeIntoMongoObjectId(input);
-        return await this.productService.likeTargetProduct(memberId, likeRefId);
+        return await this.productService.likeTargetProduct(propertyId, likeRefId);
     }
 
 
