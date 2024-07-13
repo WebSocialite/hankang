@@ -62,7 +62,7 @@ export class CommentService {
         const result = await this.commentModel
         .findOneAndUpdate({ _id: _id, memberId: memberId, commentStatus: CommentStatus.ACTIVE }, input, {
             new: true,
-        },);
+        },).exec();
         if(!result) throw new InternalServerErrorException(Message.UPDATE_FAILED);
             return result;
         }
@@ -85,13 +85,13 @@ export class CommentService {
                 metaCounter: [{ $count: "total" }],
              }, 
             },
-        ]);
+        ]).exec();
         if(!result.length) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
         return result[0];
     }
 
     public async removeCommentByAdmin (input: ObjectId): Promise<Comment> {
-        const result = await this.commentModel.findByIdAndDelete(input); // bu yerda tugridan tugri database dan ochirishni mumkun qilyapmiz sababi commentla o'ta muhum narsa emas
+        const result = await this.commentModel.findByIdAndDelete(input).exec(); // bu yerda tugridan tugri database dan ochirishni mumkun qilyapmiz sababi commentla o'ta muhum narsa emas
         if(!result) throw new InternalServerErrorException(Message.REMOVE_FAILED);
         return result;
 }

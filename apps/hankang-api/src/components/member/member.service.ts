@@ -163,9 +163,6 @@ public async getSellers(memberId: ObjectId, input: SellersInquiry): Promise<Memb
     return result;
 
    }
-
-
-
  /**         ADMIN only        **/
 
  public async getAllMembersByAdmin(input: MembersInquiry): Promise<Members> {
